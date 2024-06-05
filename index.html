@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table with Sorting</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sorttable/2.0.0/sorttable.min.js"></script>
     <style>
         table {
             border-collapse: collapse;
@@ -17,14 +17,12 @@
         }
         th {
             background-color: #f2f2f2;
-        }
-        img {
-            max-width: 500px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <table id="myTable">
+    <table id="myTable" class="sortable">
         <thead>
             <tr>
                 <th>Question</th>
@@ -37,17 +35,11 @@
     </table>
 
     <script>
-        // Fetch JSON data from JSONbin
-        async function fetchDataFromJSONBin() {
-            const binId = '666043b6ad19ca34f8748a6b'; // Replace with your JSONbin bin ID
-            const apiKey = '$2a$10$yiFj6akGbGhkeqbQVy.RuuRF.FgAJmKMAXBrdHpgOSuCedyuxBUXG'; // Replace with your JSONbin API key
-            const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-                headers: {
-                    'X-Master-Key': apiKey
-                }
-            });
+        // Fetch JSON data from a local file
+        async function fetchDataFromLocalFile() {
+            const response = await fetch('data.json'); // Update the file name if needed
             const jsonData = await response.json();
-            return jsonData.record;
+            return jsonData;
         }
 
         // Function to render data in the table
@@ -61,16 +53,13 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${questionData.text}</td>
-                        <td>${questionData.hasImage ? `<img src="${questionData.imageURL}" alt="Image">` : ''}</td>
+                        <td>${questionData.hasImage ? `<img src="${questionData.imageURL}" alt="Image" width="100">` : ''}</td>
                         <td>${renderAnswers(questionData.answers)}</td>
-                        <td>${questionData.correctAnswerIndex}: ${questionData.correctAnswerText}</td>
+                        <td>${questionData.correctAnswerText}</td>
                     `;
                     tableBody.appendChild(row);
                 }
             }
-
-            // Initialize sorttable.js for the table
-            sorttable.makeSortable(document.getElementById('myTable'));
         }
 
         // Function to render answers
@@ -85,8 +74,8 @@
             return html;
         }
 
-        // Fetch data from JSONbin and render the table
-        fetchDataFromJSONBin()
+        // Fetch data from local file and render the table
+        fetchDataFromLocalFile()
             .then(data => renderTable(data))
             .catch(error => console.error('Error fetching data:', error));
     </script>
