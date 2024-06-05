@@ -22,12 +22,19 @@
         img {
             max-width: 500px;
         }
+        table tbody tr {
+            display: none;
+        }
+        table tbody tr.active {
+            display: table-row;
+        }
     </style>
 </head>
 <body>
     <table id="myTable" class="sortable">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Question</th>
                 <th>Image</th>
                 <th>Answers</th>
@@ -36,19 +43,32 @@
         </thead>
         <tbody id="tableBody"></tbody>
     </table>
+    <div class="controls">
+        <button id="next" class="button" onclick="switchQuestion(1)">Next</button>
+        <button id="prev" class="button" onclick="switchQuestion(0)">Previous</button>
+    </div>
 
     <script src="data.js"></script>
     <script>
         // Function to render data in the table
+        const config = {
+            counter: 1,
+            questionCounter: 1
+        };
         function renderTable(data) {
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = '';
-
             for (const key in data) {
                 if (Object.hasOwnProperty.call(data, key)) {
                     const questionData = data[key];
                     const row = document.createElement('tr');
+                    row.id="row_"+config.counter;
+                    if(config.counter == 1) {
+                        row.className = "active";
+                        console.log(1);
+                    }
                     row.innerHTML = `
+                        <td>${config.counter++}</td>
                         <td>${questionData.text}</td>
                         <td>${questionData.hasImage ? `<img src="${questionData.imageURL}" alt="Image">` : ''}</td>
                         <td>${renderAnswers(questionData.answers)}</td>
@@ -69,6 +89,21 @@
             });
             html += '</ul>';
             return html;
+        }
+
+        function switchQuestion(flag) {
+
+            if(flag) {
+                config.questionCounter++;
+            } else {
+                config.questionCounter--;
+            }
+
+            if(config.questionCounter < 1 || config.questionCounter > config.counter) {
+                return;
+            }
+            document.querySelector('tr.active').classList.toggle('active');
+            document.querySelector('#row_'+config.questionCounter).classList.toggle('active');
         }
 
         // Render the table with data from data.js
