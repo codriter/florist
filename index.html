@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table with Sorting</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sorttable/2.0.0/sorttable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sorttable/2.0.0/sortable.min.js"></script>
     <style>
         table {
             border-collapse: collapse;
@@ -18,6 +18,9 @@
         th {
             background-color: #f2f2f2;
             cursor: pointer;
+        }
+        img {
+            max-width: 500px;
         }
     </style>
 </head>
@@ -34,14 +37,8 @@
         <tbody id="tableBody"></tbody>
     </table>
 
+    <script src="data.js"></script>
     <script>
-        // Fetch JSON data from a local file
-        async function fetchDataFromLocalFile() {
-            const response = await fetch('data.json'); // Update the file name if needed
-            const jsonData = await response.json();
-            return jsonData;
-        }
-
         // Function to render data in the table
         function renderTable(data) {
             const tableBody = document.getElementById('tableBody');
@@ -53,9 +50,9 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${questionData.text}</td>
-                        <td>${questionData.hasImage ? `<img src="${questionData.imageURL}" alt="Image" width="100">` : ''}</td>
+                        <td>${questionData.hasImage ? `<img src="${questionData.imageURL}" alt="Image">` : ''}</td>
                         <td>${renderAnswers(questionData.answers)}</td>
-                        <td>${questionData.correctAnswerText}</td>
+                        <td>${questionData.correctAnswerIndex} ${questionData.correctAnswerText}</td>
                     `;
                     tableBody.appendChild(row);
                 }
@@ -74,10 +71,8 @@
             return html;
         }
 
-        // Fetch data from local file and render the table
-        fetchDataFromLocalFile()
-            .then(data => renderTable(data))
-            .catch(error => console.error('Error fetching data:', error));
+        // Render the table with data from data.js
+        renderTable(data);
     </script>
 </body>
 </html>
