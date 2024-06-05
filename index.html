@@ -28,6 +28,43 @@
         table tbody tr.active {
             display: table-row;
         }
+        /* Common styles for both buttons */
+        button.next,
+        button.previous {
+            font-size: 1.5em; /* Makes the text larger */
+            padding: 10px 20px; /* Adds space around the text */
+            border: none; /* Removes default border */
+            border-radius: 5px; /* Rounds the corners */
+            cursor: pointer; /* Changes cursor to pointer on hover */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition for background color and transform */
+            margin-right: 40px;
+        }
+
+        /* Style for the "next" button */
+        button.next {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+        }
+
+        button.next:hover {
+            background-color: #45a049; /* Darker green on hover */
+            transform: scale(1.05); /* Slightly increase size on hover */
+        }
+
+        /* Style for the "previous" button */
+        button.previous {
+            background-color: #f44336; /* Red background */
+            color: white; /* White text */
+        }
+
+        button.previous:hover {
+            background-color: #e53935; /* Darker red on hover */
+            transform: scale(1.05); /* Slightly increase size on hover */
+        }
+        .controls {
+            padding: 30px;
+        }
+
     </style>
 </head>
 <body>
@@ -44,8 +81,8 @@
         <tbody id="tableBody"></tbody>
     </table>
     <div class="controls">
-        <button id="next" class="button" onclick="switchQuestion(1)">Next</button>
-        <button id="prev" class="button" onclick="switchQuestion(0)">Previous</button>
+        <button id="prev" class="button previous" onclick="switchQuestion(0)">Previous</button>
+        <button id="next" class="button next" onclick="switchQuestion(1)">Next</button>
     </div>
 
     <script src="data.js"></script>
