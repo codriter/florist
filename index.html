@@ -64,10 +64,17 @@
         .controls {
             padding: 30px;
         }
+        .controls div {
+            padding-bottom: 10px;
+        }
+        .hide * {
+            display: none;
+        }
 
     </style>
 </head>
 <body>
+    <div id="stats"><span id="number"></span> / <span id="count"></span>: <span id="persent"></span></div>
     <table id="myTable" class="sortable">
         <thead>
             <tr>
@@ -81,8 +88,18 @@
         <tbody id="tableBody"></tbody>
     </table>
     <div class="controls">
-        <button id="prev" class="button previous" onclick="switchQuestion(0)">Previous</button>
-        <button id="next" class="button next" onclick="switchQuestion(1)">Next</button>
+        <div>
+            <button id="prev" class="button previous" onclick="switchQuestion(0)">Previous</button>
+            <button id="next" class="button next" onclick="switchQuestion(1)">Next</button>
+        </div>
+        <div><label>Start width: <input type="text" id="start_point" value="1" /></label></div>
+        <div>
+            <button id="next" class="button next" onclick="toggleAnswer()">Show answer</button>
+        </div>
+        <div>
+            <button id="next" class="button next" onclick="validate(1)">Correct</button>
+            <button id="next" class="button previous" onclick="validate(0)">Wrong</button>
+        </div>
     </div>
 
     <script src="data.js"></script>
@@ -90,7 +107,11 @@
         // Function to render data in the table
         const config = {
             counter: 1,
-            questionCounter: 1
+            questionCounter: 1,
+            activeQuestion: null,
+            customStart: null,
+            pipeline: 0,
+            validCounter: 0
         };
         function renderTable(data) {
             const tableBody = document.getElementById('tableBody');
@@ -100,20 +121,53 @@
                     const questionData = data[key];
                     const row = document.createElement('tr');
                     row.id="row_"+config.counter;
-                    if(config.counter == 1) {
-                        row.className = "active";
-                        console.log(1);
-                    }
+                    // if(config.counter == 1) {
+                    //     row.className = "active";
+                    //     config.activeQuestion = row;
+                    //     console.log(1);
+                    // }
                     row.innerHTML = `
                         <td>${config.counter++}</td>
                         <td>${questionData.text}</td>
                         <td>${questionData.hasImage ? `<img src="${questionData.imageURL}" alt="Image">` : ''}</td>
                         <td>${renderAnswers(questionData.answers)}</td>
-                        <td>${questionData.correctAnswerIndex} ${questionData.correctAnswerText}</td>
+                        <td class="answerCell hide"><span>${questionData.correctAnswerIndex} ${questionData.correctAnswerText}</span></td>
                     `;
                     tableBody.appendChild(row);
                 }
             }
+        }
+
+        function initQuestion() {
+            console.log('init');
+
+            if(!config.customStart) {
+                config.customStart = 1;
+                config.questionCounter = parseInt(document.querySelector('#start_point').value)
+                updateStats();
+            }
+
+        }
+
+        function updateStats() {
+            let correctNumber = document.querySelector('#number');
+            let pipeline = document.querySelector('#count');
+            let ratio = document.querySelector('#persent');
+
+
+            correctNumber.textContent = config.validCounter;
+            pipeline.textContent = config.pipeline;
+
+            if (config.pipeline > 0) {
+                ratio.textContent = Math.round(config.validCounter / config.pipeline * 100) + "%";
+            }
+        }
+
+        function validate(flag) {
+            config.pipeline ++;
+            config.validCounter += flag;
+
+            updateStats();
         }
 
         // Function to render answers
@@ -130,6 +184,8 @@
 
         function switchQuestion(flag) {
 
+            initQuestion();
+
             if(flag) {
                 config.questionCounter++;
             } else {
@@ -139,8 +195,18 @@
             if(config.questionCounter < 1 || config.questionCounter > config.counter) {
                 return;
             }
-            document.querySelector('tr.active').classList.toggle('active');
-            document.querySelector('#row_'+config.questionCounter).classList.toggle('active');
+            
+            // document.querySelector('tr.active').classList.toggle('active');
+            if(config.activeQuestion) {
+                config.activeQuestion.classList.toggle('active');
+            }
+
+            config.activeQuestion = document.querySelector('#row_'+config.questionCounter);
+            config.activeQuestion.classList.toggle('active');
+        }
+
+        function toggleAnswer() {
+            let answerCell = config.activeQuestion.querySelector('td.answerCell').classList.toggle('hide')
         }
 
         // Render the table with data from data.js
