@@ -111,7 +111,8 @@
             activeQuestion: null,
             customStart: null,
             pipeline: 0,
-            validCounter: 0
+            validCounter: 0,
+            statsUpdated: null
         };
         function renderTable(data) {
             const tableBody = document.getElementById('tableBody');
@@ -139,7 +140,6 @@
         }
 
         function initQuestion() {
-            console.log('init');
 
             if(!config.customStart) {
                 config.customStart = 1;
@@ -161,9 +161,15 @@
             if (config.pipeline > 0) {
                 ratio.textContent = Math.round(config.validCounter / config.pipeline * 100) + "%";
             }
+
+            config.statsUpdated = true;
+
         }
 
         function validate(flag) {
+            if(config.statsUpdated) {
+                return;
+            }
             config.pipeline ++;
             config.validCounter += flag;
 
@@ -203,6 +209,8 @@
 
             config.activeQuestion = document.querySelector('#row_'+config.questionCounter);
             config.activeQuestion.classList.toggle('active');
+
+            config.statsUpdated = null;
         }
 
         function toggleAnswer() {
