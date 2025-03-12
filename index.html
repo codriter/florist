@@ -92,11 +92,13 @@
             <button id="prev" class="button previous" onclick="switchQuestion(0)">Previous</button>
             <button id="next" class="button next" onclick="switchQuestion(1)">Next</button>
         </div>
-        <div><label>Start width: <input type="text" id="start_point" value="1" /></label></div>
+        <div><label>Chose question to start with (out of several hundreds): <input type="text" id="start_point" value="1" /></label></div>
         <div>
+            <div>Hit "show answer" btn to show correct answer</div>
             <button id="next" class="button next" onclick="toggleAnswer()">Show answer</button>
         </div>
         <div>
+            <div>Compare answer with what you thought and indicate if your ansfer is correct:</div>
             <button id="next" class="button next" onclick="validate(1)">Correct</button>
             <button id="next" class="button previous" onclick="validate(0)">Wrong</button>
         </div>
